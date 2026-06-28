@@ -20,6 +20,18 @@ if (process.env.PROD_CORS_ORIGIN) {
   allowedOrigins.push(...prodOrigins);
 }
 
+// Add explicit development origins if provided
+if (process.env.DEV_CORS_ORIGIN) {
+  const devOrigins = process.env.DEV_CORS_ORIGIN.split(",").map((origin) =>
+    origin.trim()
+  );
+  allowedOrigins.push(...devOrigins);
+}
+
+// Always allow local development origins (localhost / 127.0.0.1 on any port)
+const isLocalhostOrigin = (origin) =>
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
 // CORS configuration
 app.use(
   cors({
@@ -27,10 +39,12 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
+      if (allowedOrigins.indexOf(origin) !== -1 || isLocalhostOrigin(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        // Deny without throwing so the response is a clean CORS rejection
+        // (a thrown error would surface as a 500 to the browser).
+        callback(null, false);
       }
     },
     credentials: true,
