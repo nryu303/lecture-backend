@@ -54,7 +54,7 @@ const connectDatabase = async () => {
  */
 const createDefaultAdmin = async () => {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL || "hayatenara8888@gmail.com";
+    const adminEmail = process.env.ADMIN_EMAIL || "simonfinch@gmail.com";
     const adminUsername = process.env.ADMIN_USERNAME || "admin";
     const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
     const adminRole = process.env.ADMIN_ROLE || "admin";
