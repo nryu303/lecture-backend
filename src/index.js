@@ -32,6 +32,10 @@ if (process.env.DEV_CORS_ORIGIN) {
 const isLocalhostOrigin = (origin) =>
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
+// Allow Vercel deployments (production + preview URLs, which change per deploy)
+const isVercelOrigin = (origin) =>
+  /^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.vercel\.app$/i.test(origin);
+
 // CORS configuration
 app.use(
   cors({
@@ -39,7 +43,11 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1 || isLocalhostOrigin(origin)) {
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        isLocalhostOrigin(origin) ||
+        isVercelOrigin(origin)
+      ) {
         callback(null, true);
       } else {
         // Deny without throwing so the response is a clean CORS rejection
@@ -60,6 +68,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from public directory
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+
+// Health check endpoint (used by hosting platforms like Render)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 const port = Number(process.env.PORT || 4000);
 

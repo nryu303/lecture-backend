@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
     "bcryptjs": "^3.0.2",
@@ -24,7 +27,6 @@
     "nodemailer": "^7.0.10",
     "pdfkit": "^0.17.2",
     "socket.io": "^4.8.1",
-    "sqlite3": "^5.1.7",
     "stripe": "^19.1.0"
   },
   "devDependencies": {

@@ -1,0 +1,47 @@
+# Render Blueprint for the lecture backend.
+# In Render: New + -> Blueprint -> connect this repo. Render reads this file.
+# Secret values (sync: false) must be entered in the Render dashboard.
+services:
+  - type: web
+    name: lecture-backend
+    runtime: node
+    plan: free
+    region: singapore # closest Render region to Japan
+    buildCommand: npm install
+    startCommand: node src/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      # Do NOT set PORT — Render injects it and the app reads process.env.PORT.
+
+      # --- Secrets: set these in the Render dashboard ---
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: PROD_CORS_ORIGIN
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+      # --- Non-secret defaults ---
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
